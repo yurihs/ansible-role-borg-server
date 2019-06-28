@@ -5,6 +5,8 @@
 - Installs BorgBackup.
 - Sets up SSH `authorized_keys` to allow clients to use their repositories (and nothing else).
 
+Made to work with my other role, [yurihs.borg_client](https://github.com/yurihs/ansible-role-borg-client).
+
 
 ## Role variables (default values)
 
