@@ -1,0 +1,22 @@
+---
+
+dependencies: []
+
+galaxy_info:
+  role_name: borg_server
+  author: yurihs
+  description: Install BorgBackup and configure keys to accept clients
+  license: MIT
+  min_ansible_version: 2.4
+  # any debian-based platform that has the borgbackup package should work
+  platforms:
+    - name: Debian
+      versions:
+        - stretch
+        - buster
+        - sid
+    - name: Ubuntu
+      versions:
+        - xenial
+        - bionic
+        - cosmic

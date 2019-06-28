@@ -1,0 +1,10 @@
+---
+
+borg_server_user: borg
+borg_server_group: borg
+
+borg_server_dir: /srv/borg
+
+borg_server_clients: []
+
+borg_server_append_only: false

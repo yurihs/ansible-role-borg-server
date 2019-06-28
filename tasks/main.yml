@@ -1,0 +1,44 @@
+---
+
+- name: Install borg
+  apt:
+    name: borgbackup
+    state: present
+
+- name: Create borg group
+  group:
+    name: "{{ borg_server_group }}"
+    system: true
+    state: present
+
+- name: Create borg user
+  user:
+    name: "{{ borg_server_user }}"
+    system: true
+    shell: /bin/bash
+    home: "{{ borg_server_dir }}"
+    group: "{{ borg_server_group }}"
+    groups: []
+
+- name: Create repo directories
+  file:
+    path: "{{ borg_server_dir }}/repos/{{ item.name }}"
+    state: directory
+    owner: "{{ borg_server_user }}"
+    group: "{{ borg_server_group }}"
+    mode: '700'
+  loop: "{{ borg_server_clients }}"
+
+- name: Add keys
+  authorized_key:
+    user: "{{ borg_server_user }}"
+    key: "{{ item.key }}"
+    key_options: >-
+        command="cd {{ borg_server_dir }}/repos/{{ item.name }} &&
+        borg serve
+        {% if item.append_only|default('false') or borg_server_append_only %}
+        --append-only
+        {% endif %}
+        --restrict-to-path {{ borg_server_dir }}/repos/{{ item.name }}
+        ",restrict'
+  loop: "{{ borg_server_clients }}"
