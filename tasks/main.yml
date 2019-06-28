@@ -29,16 +29,27 @@
     mode: '700'
   loop: "{{ borg_server_clients }}"
 
-- name: Add keys
+- name: Add keys with append only mode
   authorized_key:
     user: "{{ borg_server_user }}"
     key: "{{ item.key }}"
     key_options: >-
         command="cd {{ borg_server_dir }}/repos/{{ item.name }} &&
         borg serve
-        {% if item.append_only|default('false') or borg_server_append_only %}
         --append-only
-        {% endif %}
         --restrict-to-path {{ borg_server_dir }}/repos/{{ item.name }}
         ",restrict'
   loop: "{{ borg_server_clients }}"
+  when: item.append_only|default(false) or borg_server_append_only
+
+- name: Add keys without append only mode
+  authorized_key:
+    user: "{{ borg_server_user }}"
+    key: "{{ item.key }}"
+    key_options: >-
+        command="cd {{ borg_server_dir }}/repos/{{ item.name }} &&
+        borg serve
+        --restrict-to-path {{ borg_server_dir }}/repos/{{ item.name }}
+        ",restrict'
+  loop: "{{ borg_server_clients }}"
+  when: not (item.append_only|default(false) or borg_server_append_only)
